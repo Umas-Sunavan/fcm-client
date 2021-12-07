@@ -8,6 +8,12 @@ import { BehaviorSubject } from 'rxjs'
 export class MessagingService {
   currentMessage = new BehaviorSubject(null);
   constructor(private angularFireMessaging: AngularFireMessaging) {
+    navigator.serviceWorker.register('./firebase-messaging-sw.js')
+      .then((registration) => {
+        messaging.useServiceWorker(registration);
+
+        // Request permission and get token.....
+      });
   }
   requestPermission() {
     this.angularFireMessaging.requestToken.subscribe(
@@ -21,7 +27,7 @@ export class MessagingService {
   }
   receiveMessage() {
     this.angularFireMessaging.messages.subscribe(
-      (payload:any) => {
+      (payload: any) => {
         console.log("new message received. ", payload);
         this.currentMessage.next(payload);
       })
